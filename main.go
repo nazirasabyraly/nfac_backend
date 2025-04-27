@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -91,7 +92,7 @@ func sendEmail(to, subject, body string) error {
 func main() {
 	var err error
 
-	db, err = sql.Open("postgres", "user=postgres password=12345 dbname=time_capsule sslmode=disable")
+	db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal("Ошибка подключения к базе данных:", err)
 	}
