@@ -15,6 +15,7 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/robfig/cron/v3"
 	"net/smtp"
+	"strconv"
 )
 
 var db *sql.DB
@@ -88,6 +89,22 @@ func sendEmail(to, subject, body string) error {
 
 	return smtp.SendMail(smtpHost+":"+smtpPort, auth, from, []string{to}, []byte(msg))
 }
+func deleteCapsuleHandler(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid capsule ID", http.StatusBadRequest)
+		return
+	}
+
+	_, err = db.Exec("DELETE FROM capsules WHERE id = $1", id)
+	if err != nil {
+		http.Error(w, "Failed to delete capsule", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
 
 func main() {
 	var err error
@@ -116,6 +133,7 @@ func main() {
 
 	r.Post("/capsules", createCapsuleHandler)
 	r.Get("/capsules", listCapsulesHandler)
+	r.Delete("/capsules/{id}", deleteCapsuleHandler)
 
 	startCapsuleChecker()
 
