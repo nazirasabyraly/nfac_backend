@@ -123,7 +123,7 @@ func main() {
 
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://nfac-frontend.vercel.app"},
-		AllowedMethods:   []string{"GET", "POST", "DELETE", "OPTIONS"}, // ← ДОБАВИЛИ "DELETE"
+		AllowedMethods:   []string{"GET", "POST", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		AllowCredentials: true,
 	}))
